@@ -5,6 +5,8 @@ import csv
 import json
 import unittest
 import os
+import sqlite3
+
 
 #
 # Your name: Ruthie Dingeldein and Clare McAuliffe
@@ -27,5 +29,17 @@ for city_data in soup.find_all('tr'):
     land_area = city_data[3]
     summary = (city, population_density, population, land_area)
     city_summaries.append(summary)
-print(city_summaries)
+
+#setting up database
+db_name = 'Uber Population Analysis'
+path = os.path.dirname(os.path.abspath(__file__))
+conn = sqlite3.connect(path+'/'+db_name)
+cur = conn.cursor()
+
+cur.execute("DROP TABLE IF EXISTS Populations")
+cur.execute("CREATE TABLE Populations (city TEXT PRIMARY KEY, population_density INTEGER, population INTEGER, land_area INTEGER)")
+for city in city_summaries:
+    cur.execute("INSERT INTO Populations (city, population_density, population, land_area) VALUES (?,?,?,?)", city)
+conn.commit()
+
 
