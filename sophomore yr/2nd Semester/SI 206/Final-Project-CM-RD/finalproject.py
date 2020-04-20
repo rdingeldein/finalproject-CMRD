@@ -31,15 +31,28 @@ for city_data in soup.find_all('tr'):
     city_summaries.append(summary)
 
 #setting up database
-db_name = 'Uber Population Analysis'
+db_name = 'Population Analysis'
 path = os.path.dirname(os.path.abspath(__file__))
 conn = sqlite3.connect(path+'/'+db_name)
 cur = conn.cursor()
 
+#setting up Populations Table
 cur.execute("DROP TABLE IF EXISTS Populations")
 cur.execute("CREATE TABLE Populations (city TEXT PRIMARY KEY, population_density INTEGER, population INTEGER, land_area INTEGER)")
 for city in city_summaries:
     cur.execute("INSERT INTO Populations (city, population_density, population, land_area) VALUES (?,?,?,?)", city)
+conn.commit()
+
+#setting up Type Table
+cur.execute("DROP TABLE IF EXISTS Type")
+cur.execute("CREATE TABLE Type (city TEXT PRIMARY KEY, type TEXT)")
+for city in city_summaries[1:]:
+    if int(city[1].replace(',', '')) < 5000:
+        cur.execute("INSERT INTO Type (city, type) VALUES (?, ?)", (city[0], 'Small'))
+    elif int(city[1].replace(',', '')) < 10000:
+        cur.execute("INSERT INTO Type (city, type) VALUES (?, ?)", (city[0], 'Medium'))
+    else:
+        cur.execute("INSERT INTO Type (city, type) VALUES (?, ?)", (city[0], 'Large'))
 conn.commit()
 
 
