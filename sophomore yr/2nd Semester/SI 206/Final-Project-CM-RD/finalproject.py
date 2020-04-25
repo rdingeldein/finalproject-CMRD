@@ -9,7 +9,6 @@ import sqlite3
 import matplotlib
 import matplotlib.pyplot as plt
 
-
 #
 # Your name: Ruthie Dingeldein and Clare McAuliffe
 #
@@ -41,20 +40,31 @@ cur = conn.cursor()
 #setting up Populations Table
 cur.execute("DROP TABLE IF EXISTS Populations")
 cur.execute("CREATE TABLE Populations (city TEXT PRIMARY KEY, population_density INTEGER, population INTEGER, land_area INTEGER)")
-for city in city_summaries:
-    cur.execute("INSERT INTO Populations (city, population_density, population, land_area) VALUES (?,?,?,?)", city)
+minimum = 0
+maximum = 20
+for i in range(20):
+    for city in city_summaries[minimum:maximum]:
+        cur.execute("INSERT INTO Populations (city, population_density, population, land_area) VALUES (?,?,?,?)", city)
+    minimum += 20
+    maximum += 20
+
 conn.commit()
 
 #setting up Type Table
 cur.execute("DROP TABLE IF EXISTS Type")
 cur.execute("CREATE TABLE Type (city TEXT PRIMARY KEY, type TEXT)")
-for city in city_summaries[1:]:
-    if int(city[1].replace(',', '')) < 5000:
-        cur.execute("INSERT INTO Type (city, type) VALUES (?, ?)", (city[0], 'Small'))
-    elif int(city[1].replace(',', '')) < 10000:
-        cur.execute("INSERT INTO Type (city, type) VALUES (?, ?)", (city[0], 'Medium'))
-    else:
-        cur.execute("INSERT INTO Type (city, type) VALUES (?, ?)", (city[0], 'Large'))
+minimum = 1
+maximum = 20
+for i in range(20):
+    for city in city_summaries[minimum:maximum]:
+        if int(city[1].replace(',', '')) < 5000:
+            cur.execute("INSERT INTO Type (city, type) VALUES (?, ?)", (city[0], 'Small'))
+        elif int(city[1].replace(',', '')) < 10000:
+            cur.execute("INSERT INTO Type (city, type) VALUES (?, ?)", (city[0], 'Medium'))
+        else:
+            cur.execute("INSERT INTO Type (city, type) VALUES (?, ?)", (city[0], 'Large'))
+    minimum += 20
+    maximum += 20
 conn.commit()
 
 #gathering data for populations per city
@@ -116,8 +126,13 @@ for city_data in headers:
 
 cur.execute("DROP TABLE IF EXISTS Salaries")
 cur.execute("CREATE TABLE Salaries (ranking INTEGER PRIMARY KEY, citystate TEXT, average_hourly TEXT)")
-for ranking in salaries_sum:
-    cur.execute("INSERT INTO Salaries (ranking, citystate, average_hourly) VALUES (?,?,?)", ranking)
+minimum = 0
+maximum = 16
+for i in range(2):
+    for ranking in salaries_sum[minimum:maximum]:
+        cur.execute("INSERT INTO Salaries (ranking, citystate, average_hourly) VALUES (?,?,?)", ranking)
+    minimum = 16
+    maximum = 33
 conn.commit()
 
 #joining the databases 
@@ -137,7 +152,28 @@ for city in reversed(rest):
     hourlysalaries.append((sal))
 plt.scatter(popdensities, hourlysalaries, color='r')
 
-plt.show()
+#plt.show()
+
+#average salary by city type 
+small_total = 0
+small_count = 0
+medium_total = 0
+medium_count = 0
+large_total = 0
+large_count = 0
+for city in rest:
+    if int(city[1].replace(',', '')) < 5000:
+        small_total += float(city[3][1:])
+        small_count += 1
+    elif int(city[1].replace(',', '')) < 10000:
+        medium_total += float(city[3][1:])
+        medium_count += 1
+    else:
+        large_total += float(city[3][1:])
+        large_count += 1
+small_average = small_total/small_count
+medium_average = medium_total/medium_count
+large_average = large_total/large_count
 
 
 
