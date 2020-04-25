@@ -119,8 +119,8 @@ for ranking in salaries_sum:
 conn.commit()
 
 #joining the databases 
-#cur.execute('SELECT name, address FROM Restaurants INNER JOIN Categories ON Restaurants.category_id=Categories.id WHERE title=?', (category,))
-#rest = cur.fetchall()
-#conn.commit()
+cur.execute('SELECT city, population_density, Salaries.average_hourly FROM Populations INNER JOIN Salaries ON Populations.city = Salaries.citystate')
+rest = cur.fetchall()
+conn.commit()
 
 

@@ -82,3 +82,6 @@ for ranking in salaries_sum:
 conn.commit()
 
 #joining the databases 
+cur.execute('SELECT name, address FROM Restaurants INNER JOIN Categories ON Restaurants.category_id=Categories.id WHERE title=?', (category,))
+rest = cur.fetchall()
+conn.commit()
