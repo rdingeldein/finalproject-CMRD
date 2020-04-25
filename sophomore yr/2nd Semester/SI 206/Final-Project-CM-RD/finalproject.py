@@ -6,6 +6,8 @@ import json
 import unittest
 import os
 import sqlite3
+import matplotlib
+import matplotlib.pyplot as plt
 
 
 #
@@ -119,8 +121,24 @@ for ranking in salaries_sum:
 conn.commit()
 
 #joining the databases 
-cur.execute('SELECT city, population_density, Salaries.average_hourly FROM Populations INNER JOIN Salaries ON Populations.city = Salaries.citystate')
+cur.execute('SELECT city, population_density, Salaries.ranking, Salaries.average_hourly FROM Populations INNER JOIN Salaries ON Populations.city = Salaries.citystate')
 rest = cur.fetchall()
 conn.commit()
+
+#first figure 
+plt.ylabel('Hourly Salary')
+plt.xlabel('Population Density')
+hourlysalaries = []
+popdensities = []
+for city in reversed(rest):
+    density = city[1].replace(",","")
+    popdensities.append(int(density))
+    sal = city[3].replace("$","")
+    hourlysalaries.append((sal))
+plt.scatter(popdensities, hourlysalaries, color='r')
+
+plt.show()
+
+
 
 
