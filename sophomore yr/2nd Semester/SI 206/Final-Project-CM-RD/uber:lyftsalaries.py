@@ -31,11 +31,11 @@ for city_data in headers:
         ranking = ranking.replace(".", "")
         citypart1 = city_data[1]
         citypart2 = city_data[2]
-        citypart2 = citypart2.replace(",", "")
+        #citypart2 = citypart2.replace(",", "")
         city = citypart1 + " " + citypart2
         statepart1 = city_data[3]
         statepart2 = city_data[4]
-        state = statepart1 + " " + statepart2
+        citystate = city + " " +statepart1 + " " + statepart2
         
         average_hourly = city_data[6]
 
@@ -45,7 +45,7 @@ for city_data in headers:
         city = city_data[1]
         statepart1 = city_data[2]
         statepart2 = city_data[3]
-        state = statepart1 + " " + statepart2
+        citystate = city + " " + statepart1 + " " + statepart2 
         average_hourly = city_data[5]
 
     elif len(city_data) == 6:
@@ -53,21 +53,20 @@ for city_data in headers:
         ranking = ranking.replace(".", "")
         citypart1 = city_data[1]
         citypart2 = city_data[2]
-        #city = city.append(city_data[2])
-        citypart2 = citypart2.replace(",", "")
+        #citypart2 = citypart2.replace(",", "")
         city = citypart1 + " " + citypart2
-        state = city_data[3]
+        citystate = city + " " + city_data[3]
         average_hourly = city_data[5]
 
     else:
         ranking = city_data[0]
         ranking = ranking.replace(".", "")
         city = city_data[1]
-        city = city.replace(",", "")
-        state = city_data[2]
+        #city = city.replace(",", "")
+        citystate = city + " " +city_data[2]
         average_hourly = city_data[4]
         
-    summary = (ranking, city, state, average_hourly)
+    summary = (ranking, citystate, average_hourly)
     salaries_sum.append(summary)
 
 #setting up database
@@ -77,7 +76,9 @@ conn = sqlite3.connect(path+'/'+db_name)
 cur = conn.cursor()
 
 cur.execute("DROP TABLE IF EXISTS Salaries")
-cur.execute("CREATE TABLE Salaries (ranking INTEGER PRIMARY KEY, state TEXT, city TEXT, average_hourly TEXT)")
+cur.execute("CREATE TABLE Salaries (ranking INTEGER PRIMARY KEY, citystate TEXT, average_hourly TEXT)")
 for ranking in salaries_sum:
-    cur.execute("INSERT INTO Salaries (ranking, state, city, average_hourly) VALUES (?,?,?,?)", ranking)
+    cur.execute("INSERT INTO Salaries (ranking, citystate, average_hourly) VALUES (?,?,?)", ranking)
 conn.commit()
+
+#joining the databases 
