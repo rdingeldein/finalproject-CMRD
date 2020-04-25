@@ -7,7 +7,6 @@ import unittest
 import os
 import sqlite3
 
-
 #
 # Your name: Ruthie Dingeldein and Clare McAuliffe
 #
