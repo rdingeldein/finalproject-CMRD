@@ -121,5 +121,14 @@ plt.plot(x, y, 'ok', markersize=3)
 plt.text(x, y, topthree[2][0], fontsize=8)
 plt.show()
 
+#writing to a csv
+with open('data.txt', 'w', newline='') as file:
+    writer = csv.writer(file)
+    labels = ("City and State", "Population Density", "Ranking", "Hourly Salary", "Population")
+    writer.writerow(labels)
+    for entries in rest:
+        writer.writerow(entries)
+        file.flush()
+file.close()
 
 
