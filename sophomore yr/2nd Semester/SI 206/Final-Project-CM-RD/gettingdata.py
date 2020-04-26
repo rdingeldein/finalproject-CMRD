@@ -44,32 +44,33 @@ cur = conn.cursor()
 #setting up Populations Table
 cur.execute("DROP TABLE IF EXISTS Populations")
 cur.execute("CREATE TABLE Populations (city TEXT PRIMARY KEY, population_density INTEGER, population INTEGER, land_area INTEGER)")
-minimum = 0
-maximum = 20
-for i in range(20):
-    for city in city_summaries[minimum:maximum]:
-        cur.execute("INSERT INTO Populations (city, population_density, population, land_area) VALUES (?,?,?,?)", city)
-    minimum += 20
-    maximum += 20
+for i in range(30):
+    cur.execute("SELECT * FROM Populations")
+    index = len(cur.fetchall())
+    if index <= len(city_summaries):
+        for city in city_summaries[index:index+20]:
+            cur.execute("INSERT OR IGNORE INTO Populations (city, population_density, population, land_area) VALUES (?,?,?,?)", city)
+    i += 1
+    conn.commit()
 
-conn.commit()
+
 
 #setting up Type Table
 cur.execute("DROP TABLE IF EXISTS Type")
 cur.execute("CREATE TABLE Type (city TEXT PRIMARY KEY, type TEXT)")
-minimum = 1
-maximum = 20
-for i in range(20):
-    for city in city_summaries[minimum:maximum]:
-        if int(city[1].replace(',', '')) < 5000:
-            cur.execute("INSERT INTO Type (city, type) VALUES (?, ?)", (city[0], 'Small'))
-        elif int(city[1].replace(',', '')) < 10000:
-            cur.execute("INSERT INTO Type (city, type) VALUES (?, ?)", (city[0], 'Medium'))
-        else:
-            cur.execute("INSERT INTO Type (city, type) VALUES (?, ?)", (city[0], 'Large'))
-    minimum += 20
-    maximum += 20
-conn.commit()
+for i in range(30):
+    cur.execute("SELECT * FROM Type")
+    index = len(cur.fetchall())
+    if index <= len(city_summaries):
+        for city in city_summaries[index:index+20]:
+            if int(city[1].replace(',', '')) < 5000:
+                cur.execute("INSERT OR IGNORE INTO Type (city, type) VALUES (?, ?)", (city[0], 'Small'))
+            elif int(city[1].replace(',', '')) < 10000:
+                cur.execute("INSERT OR IGNORE INTO Type (city, type) VALUES (?, ?)", (city[0], 'Medium'))
+            else:
+                cur.execute("INSERT OR IGNORE INTO Type (city, type) VALUES (?, ?)", (city[0], 'Large'))
+    i += 1
+    conn.commit()
 
 #gathering data for populations per city
 article_url = 'https://www.businessinsider.com/highest-earning-cities-uber-lyft-2019-12'
@@ -130,12 +131,11 @@ for city_data in headers:
 
 cur.execute("DROP TABLE IF EXISTS Salaries")
 cur.execute("CREATE TABLE Salaries (ranking INTEGER PRIMARY KEY, citystate TEXT, average_hourly TEXT)")
-minimum = 0
-maximum = 16
 for i in range(2):
-    for ranking in salaries_sum[minimum:maximum]:
-        cur.execute("INSERT INTO Salaries (ranking, citystate, average_hourly) VALUES (?,?,?)", ranking)
-    minimum = 16
-    maximum = 33
-conn.commit()
-
+    cur.execute("SELECT * FROM Salaries")
+    index = len(cur.fetchall())
+    if index <= len(salaries_sum):
+        for salary in salaries_sum[index:index+16]:
+            cur.execute("INSERT OR IGNORE INTO Salaries (ranking, citystate, average_hourly) VALUES (?,?,?)", ranking)
+    i += 1
+    conn.commit()
