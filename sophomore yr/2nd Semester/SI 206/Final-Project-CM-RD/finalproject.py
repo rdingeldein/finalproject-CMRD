@@ -44,24 +44,25 @@ def figure_one():
 
     plt.show()
 
-#relation between pop and salary  
-plt.ylabel('Hourly Salary')
-plt.xlabel('Population')
-plt.title("Relationship between uber/lyft salaries and population")
-hourlysalaries = []
-popdensities = []
-for city in reversed(set_up(db_name)):
-    density = city[4].replace(",","")
-    popdensities.append(int(density))
-    sal = city[3].replace("$","")
-    hourlysalaries.append((sal))
-plt.scatter(popdensities, hourlysalaries, color='g')
-
-plt.show()
-
-
-#average salary by city type 
+#second figure (relation between pop and salary)
 def figure_two():
+    plt.ylabel('Hourly Salary')
+    plt.xlabel('Population')
+    plt.title("Relationship between uber/lyft salaries and population")
+    hourlysalaries = []
+    popdensities = []
+    for city in reversed(set_up(db_name)):
+        density = city[4].replace(",","")
+        popdensities.append(int(density))
+        sal = city[3].replace("$","")
+        hourlysalaries.append((sal))
+    plt.scatter(popdensities, hourlysalaries, color='g')
+
+    plt.show()
+
+
+#average salary by city type/third figure
+def figure_three():
     small_total = 0
     small_count = 0
     medium_total = 0
@@ -82,8 +83,6 @@ def figure_two():
     medium_average = medium_total/medium_count
     large_average = large_total/large_count
 
-    #second figure
-def figure_three():
     plt.ylabel('Average Hourly Salary')
     plt.xlabel('City Size')
     plt.title("Relationship between uber/lyft salaries and city size")
@@ -96,7 +95,7 @@ def figure_three():
     plt.xticks(y_pos, size)
     plt.show()
 
-#third figure
+#fourth figure
 def figure_four(cur, conn):
     cur.execute('SELECT citystate FROM Salaries')
     topthree = cur.fetchall()
