@@ -83,6 +83,7 @@ def figure_two():
     large_average = large_total/large_count
 
     #second figure
+def figure_three():
     plt.ylabel('Average Hourly Salary')
     plt.xlabel('City Size')
     plt.title("Relationship between uber/lyft salaries and city size")
@@ -96,7 +97,7 @@ def figure_two():
     plt.show()
 
 #third figure
-def figure_three(cur, conn):
+def figure_four(cur, conn):
     cur.execute('SELECT citystate FROM Salaries')
     topthree = cur.fetchall()
     topthree = topthree[0:3]
