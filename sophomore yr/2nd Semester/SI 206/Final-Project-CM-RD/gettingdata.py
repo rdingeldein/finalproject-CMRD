@@ -42,8 +42,8 @@ conn = sqlite3.connect(path+'/'+db_name)
 cur = conn.cursor()
 
 #setting up Populations Table
-cur.execute("DROP TABLE IF EXISTS Populations")
-cur.execute("CREATE TABLE Populations (city TEXT PRIMARY KEY, population_density INTEGER, population INTEGER, land_area INTEGER)")
+
+cur.execute("CREATE TABLE IF NOT EXISTS Populations (city TEXT PRIMARY KEY, population_density INTEGER, population INTEGER, land_area INTEGER)")
 for i in range(30):
     cur.execute("SELECT * FROM Populations")
     index = len(cur.fetchall())
@@ -56,8 +56,8 @@ for i in range(30):
 
 
 #setting up Type Table
-cur.execute("DROP TABLE IF EXISTS Type")
-cur.execute("CREATE TABLE Type (city TEXT PRIMARY KEY, type TEXT)")
+
+cur.execute("CREATE TABLE IF NOT EXISTS Type (city TEXT PRIMARY KEY, type TEXT)")
 for i in range(30):
     cur.execute("SELECT * FROM Type")
     index = len(cur.fetchall())
@@ -129,8 +129,7 @@ for city_data in headers:
     salaries_sum.append(summary)
 
 
-cur.execute("DROP TABLE IF EXISTS Salaries")
-cur.execute("CREATE TABLE Salaries (ranking INTEGER PRIMARY KEY, citystate TEXT, average_hourly TEXT)")
+cur.execute("CREATE TABLE IF NOT EXISTS Salaries (ranking INTEGER PRIMARY KEY, citystate TEXT, average_hourly TEXT)")
 for i in range(2):
     cur.execute("SELECT * FROM Salaries")
     index = len(cur.fetchall())
