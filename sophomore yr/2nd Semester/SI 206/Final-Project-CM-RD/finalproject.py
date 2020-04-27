@@ -123,13 +123,31 @@ def figure_four(cur, conn):
     plt.show()
 
 #writing to a csv
-with open('data.txt', 'w', newline='') as file:
-    writer = csv.writer(file)
-    labels = ("City and State", "Population Density", "Ranking", "Hourly Salary", "Population")
-    writer.writerow(labels)
-    for entries in set_up(db_name):
-        writer.writerow(entries)
-        file.flush()
-    file.close()
+def write_csv():
+    with open('data.txt', 'w', newline='') as file:
+        writer = csv.writer(file)
+        labels = ("City and State", "Population Density", "Ranking", "Hourly Salary", "Population")
+        writer.writerow(labels)
+        for entries in set_up(db_name):
+            writer.writerow(entries)
+            file.flush()
+        file.close()
+
+def main():
+    set_up(db_name)
+    figure_one()
+    figure_two()
+    figure_three()
+    path = os.path.dirname(os.path.abspath(__file__))
+    conn = sqlite3.connect(path+'/'+db_name)
+    cur = conn.cursor()
+    figure_four(cur, conn)
+    write_csv()
+    conn.close()
+
+
+if __name__ == "__main__":
+    main()
+    unittest.main(verbosity = 2)
 
 

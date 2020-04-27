@@ -19,7 +19,6 @@ import math
 
 
 #gathering data for populations per city
-article_url = 'https://www.governing.com/gov-data/population-density-land-area-cities-map.html'
 def gather_data(article_url):
     p = requests.get(article_url)
     page = p.text
@@ -37,13 +36,6 @@ def gather_data(article_url):
         city_summaries.append(summary)
     return city_summaries
 
-#setting up database
-db_name = 'Population Analysis'
-def set_up(db_name):
-    path = os.path.dirname(os.path.abspath(__file__))
-    conn = sqlite3.connect(path+'/'+db_name)
-    cur = conn.cursor()
-    return cur, conn
 
 #setting up Populations Table
 def population_table(article_url, cur, conn):
@@ -77,7 +69,6 @@ def type_table(article_url, cur, conn):
         conn.commit()
 
 #gathering data for populations per city
-article_url = 'https://www.businessinsider.com/highest-earning-cities-uber-lyft-2019-12'
 def gather_data2(article_url):
     p = requests.get(article_url)
     page = p.text
@@ -142,6 +133,24 @@ def salaries_table(article_url, cur, conn):
         index = len(cur.fetchall())
         if index <= len(gather_data2(article_url)):
             for salary in gather_data2(article_url)[index:index+16]:
-                cur.execute("INSERT OR IGNORE INTO Salaries (ranking, citystate, average_hourly) VALUES (?,?,?)", ranking)
+                cur.execute("INSERT OR IGNORE INTO Salaries (ranking, citystate, average_hourly) VALUES (?,?,?)", salary)
         i += 1
         conn.commit()
+
+
+def main():
+    path = os.path.dirname(os.path.abspath(__file__))
+    conn = sqlite3.connect(path+'/'+'Population Analysis')
+    cur = conn.cursor()
+    gather_data('https://www.governing.com/gov-data/population-density-land-area-cities-map.html')
+    population_table('https://www.governing.com/gov-data/population-density-land-area-cities-map.html', cur, conn)
+    type_table('https://www.governing.com/gov-data/population-density-land-area-cities-map.html', cur, conn)
+    gather_data2('https://www.businessinsider.com/highest-earning-cities-uber-lyft-2019-12')
+    salaries_table('https://www.businessinsider.com/highest-earning-cities-uber-lyft-2019-12', cur, conn)
+    conn.close()
+
+
+
+if __name__ == "__main__":
+    main()
+    unittest.main(verbosity = 2)
