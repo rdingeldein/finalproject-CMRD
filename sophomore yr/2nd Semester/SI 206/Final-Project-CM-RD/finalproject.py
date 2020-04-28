@@ -123,18 +123,25 @@ def figure_four(cur, conn):
     plt.show()
 
 #writing to a csv
-def write_csv():
-    with open('data.txt', 'w', newline='') as file:
+def write_csv(datalist):
+    with open('data', 'w', newline='') as file:
         writer = csv.writer(file)
         labels = ("City and State", "Population Density", "Ranking", "Hourly Salary", "Population")
         writer.writerow(labels)
-        for entries in set_up(db_name):
+        for entries in datalist:
             writer.writerow(entries)
-            file.flush()
+            #file.flush()
         file.close()
+        myfile = open("data", "r")
+        #print(myfile.read())
+        path = os.path.abspath('data')
+        directory = os.path.dirname(path)
+        #print(directory)
+        myfile.close()
+
 
 def main():
-    set_up(db_name)
+    datalist = set_up(db_name)
     figure_one()
     figure_two()
     figure_three()
@@ -142,8 +149,9 @@ def main():
     conn = sqlite3.connect(path+'/'+db_name)
     cur = conn.cursor()
     figure_four(cur, conn)
-    write_csv()
+    write_csv(datalist)
     conn.close()
+    
 
 
 if __name__ == "__main__":
